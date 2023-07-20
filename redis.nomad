@@ -18,10 +18,11 @@ job "redis" {
     }
 
     network {
-        port "redis_port" {  static = 6379 } 
+      mode = "host" 
         dns {
         servers = ["172.17.0.1", "8.8.8.8", "8.8.4.4"]
        }
+        port "redis_port" {  static = 6379 } 
     }
 
 
