@@ -38,40 +38,24 @@ job "traefik-proxy" {
       config {
         image = "traefik:v2.9"
         args = [
-          "--entryPoints.web.address=:80",
-          "--entryPoints.http.transport.lifeCycle.requestAcceptGraceTimeout=15s",
-          "--entryPoints.http.transport.lifeCycle.graceTimeOut=10s",
-          "--entryPoints.http.forwardedHeaders.insecure",
-          "--entrypoints.websecure.address=:443",
-          // "--entryPoints.admin.address=:8080",
-          // "--entryPoints.admin.transport.lifeCycle.requestAcceptGraceTimeout=15s",
-          // "--entryPoints.admin.transport.lifeCycle.graceTimeOut=10s",
-          "--accesslog=true",
-          "--api=true",
-          "--api.insecure=true",
-          "--api.dashboard=true",
-          // "--metrics=true",
-          // "--metrics.prometheus=true",
-          // "--metrics.prometheus.entryPoint=admin",
-          // "--metrics.prometheus.manualrouting=true",
-          // "--ping=true",
-          // "--ping.entryPoint=admin",
-          "--providers.consulcatalog=true",
-          "--providers.consulcatalog.endpoint.address=http://172.17.0.1:8500",
-          "--providers.consulcatalog.prefix=traefik",
-          // "--providers.consulcatalog.scheme=http",
-          //"--providers.consulcatalog.endpoint.token=123e4567-e89b-12d3-a456-426614174000",
-          "--providers.docker=true",
-          "--certificatesresolvers.letsencrypt.acme.email=your@mail.com",
-          "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json",
-          "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http",
-          "--certificatesresolvers.letsencrypt.acme.tlschallenge=true",
-          "--entrypoints.websecure.http.redirections.entrypoint.to=https",
-          "--entrypoints.websecure.http.redirections.entrypoint.scheme=https",
+            "--api=true",
+            "--api.dashboard=true",
+            "--api.insecure=true",
+            "--accesslog=true",
+            "--providers.docker=true",
+            "--providers.consulcatalog=true",
+            "--providers.consulcatalog.endpoint.address=http://172.17.0.1:8500",
+            "--entryPoints.web.address=:80",
+            "--providers.consulcatalog.prefix=traefik",
+            "--entrypoints.websecure.address=:443",
+            "--certificatesresolvers.letsencrypt.acme.email=princeraj@tuta.io",
+            "--certificatesresolvers.letsencrypt.acme.storage=./letsencrypt/acme.json",
+            "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
         ]
         ports = ["http", "https", "admin"]
         volumes = [
-          "/var/run/docker.sock:/var/run/docker.sock"
+          "/var/run/docker.sock:/var/run/docker.sock", 
+          "./letsencrypt:/letsencrypt"
         ]
       }
 
@@ -84,7 +68,6 @@ job "traefik-proxy" {
 
       service {
         name = "traefik"
-
         check {
           name     = "alive"
           type     = "tcp"
